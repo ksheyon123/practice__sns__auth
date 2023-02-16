@@ -14,7 +14,7 @@ const PATH = {
     oauth_2: "/api/oauth2/token",
   },
   twitter: {
-    oauth_2: "/oauth2/token",
+    oauth_2: "/2/oauth2/token",
   },
 };
 const DISCORD_AUTH_PARAMS = {
@@ -25,10 +25,10 @@ const DISCORD_AUTH_PARAMS = {
 
 const TWITTER_AUTH_PARAMS = {
   client_id: TWITTER_CLIENT_ID,
-  client_secret: TWITTER_CLIENT_SECRET,
+  // client_secret: TWITTER_CLIENT_SECRET,
   grant_type: "authorization_code",
   code_verifier: "challenge",
-  redirect_uri: "http://10.211.0.130:3000",
+  redirect_uri: encodeURIComponent("http://10.211.1.22:3000/callback"),
 };
 
 const requestAuthToken = async (params) => {
@@ -56,20 +56,16 @@ const requestTweeterAuthToken = async (params, queryString) => {
       ...TWITTER_AUTH_PARAMS,
       ...params,
     };
-
+    console.log("authParams", authParams);
     console.log(
       "Twitter",
-      btoa(`${TWITTER_CLIENT_ID}:${TWITTER_CLIENT_SECRET}`)
+      btoa(`${TWITTER_CLIENT_ID}:${TWITTER_CLIENT_SECRET}$`)
     );
     const rsp = await post(
       `${TWITTER_ENDPOINT}${PATH.twitter.oauth_2}`,
-      { ...authParams },
       {},
-      {
-        Authorization: `Basic ${btoa(
-          `${TWITTER_CLIENT_ID}:${TWITTER_CLIENT_SECRET}`
-        )}`,
-      }
+      { ...authParams },
+      {}
     );
     console.log(rsp);
   } catch (e) {
@@ -101,18 +97,21 @@ const get = async (domain, params) => {
 
 const post = async (domain, params, queryString, headers) => {
   try {
+    const qs = queryStringCreator(queryString);
     const param = new URLSearchParams();
     const keys = Object.keys(params);
     keys.map((el) => {
       param.append(el, params[el]);
     });
-    const rsp = await fetch(`${domain}`, {
+    const rsp = await fetch(`${domain}${qs}`, {
       method: "POST",
       headers: {
-        ...headers,
+        Accept: "*/*",
+        Authorization:
+          "Basic WkRkT2EwUmpXbEpZTFdaUVVIRkhhMHRDTW13Nk1UcGphUTo3cmNIT3o1d1pINDFjVXdnZVp0MEtOSmVxYmVFQ3ZpUmEzWnpyUVJGa3ZnSWNZaldZdQ==",
         "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: param,
+      body: undefined,
     });
     const data = await rsp.json();
     console.log(data);

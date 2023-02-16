@@ -60,7 +60,7 @@ const Page = () => {
         <button
           onClick={() => {
             const encodedURL = encodeURIComponent("http://10.211.0.130:3000");
-            window.location = `https://twitter.com/i/oauth2/authorize?response_type=code&client_id=ZDdOa0RjWlJYLWZQUHFHa0tCMmw6MTpjaQ&redirect_uri=${encodedURL}&scope=tweet.read%20users.read%20follows.read%20offline.access&state=state&code_challenge=challenge&code_challenge_method=plain`;
+            window.location = `https://twitter.com/i/oauth2/authorize?state=state&code_challenge=challenge&code_challenge_method=plain&client_id=ZDdOa0RjWlJYLWZQUHFHa0tCMmw6MTpjaQ&scope=users.read&response_type=code&redirect_uri=${encodedURL}`;
             // getTweeterAuthToken();
           }}
         >
