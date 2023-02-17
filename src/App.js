@@ -48,8 +48,9 @@ const Page = () => {
         <div>Discord</div>
         <button
           onClick={() => {
-            window.location =
-              "https://discord.com/api/oauth2/authorize?client_id=1073174155798777937&redirect_uri=http%3A%2F%2F10.241.0.113%3A3000&response_type=code&scope=identify%20guilds";
+            const encodedURL = encodeURIComponent("http://10.211.0.130:3000");
+
+            window.location = `https://discord.com/api/oauth2/authorize?client_id=1075705706356936796&redirect_uri=${encodedURL}&response_type=code&scope=identify%20guilds`;
           }}
         >
           Login To Discord

@@ -43,6 +43,7 @@ const requestAuthToken = async (params) => {
       {
         ...authParams,
       },
+      {},
       {}
     );
   } catch (e) {
@@ -107,11 +108,9 @@ const post = async (domain, params, queryString, headers) => {
       method: "POST",
       headers: {
         Accept: "*/*",
-        Authorization:
-          "Basic WkRkT2EwUmpXbEpZTFdaUVVIRkhhMHRDTW13Nk1UcGphUTo3cmNIT3o1d1pINDFjVXdnZVp0MEtOSmVxYmVFQ3ZpUmEzWnpyUVJGa3ZnSWNZaldZdQ==",
         "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: undefined,
+      body: param,
     });
     const data = await rsp.json();
     console.log(data);
