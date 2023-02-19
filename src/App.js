@@ -1,15 +1,18 @@
 import React, { useEffect, useCallback } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { queryParser } from "./utils/index";
-import { requestAuthToken, requestTweeterAuthToken } from "./apis/api";
+import {
+  requestAuthToken,
+  requestTweeterAuthToken,
+  requestUsingTwitterAuth,
+  getUserByUsername,
+} from "./apis/api";
 
 const Page = () => {
   const location = window.location;
   const domain = location.origin;
-  console.log(domain);
   const { search } = useLocation();
   const { code, state } = queryParser(search);
-  console.log(state);
   const getDiscordAuthToken = useCallback(async () => {
     try {
       const result = await requestAuthToken({
@@ -60,12 +63,26 @@ const Page = () => {
         <div>Tweeter</div>
         <button
           onClick={() => {
-            const encodedURL = encodeURIComponent("http://10.211.0.130:3000");
-            window.location = `https://twitter.com/i/oauth2/authorize?state=state&code_challenge=challenge&code_challenge_method=plain&client_id=ZDdOa0RjWlJYLWZQUHFHa0tCMmw6MTpjaQ&scope=users.read&response_type=code&redirect_uri=${encodedURL}`;
+            requestUsingTwitterAuth();
+            // const encodedURL = encodeURIComponent("http://10.211.0.130:3000");
+            // window.location = `https://twitter.com/i/oauth2/authorize?state=state&code_challenge=challenge&code_challenge_method=plain&client_id=ZDdOa0RjWlJYLWZQUHFHa0tCMmw6MTpjaQ&scope=users.read&response_type=code&redirect_uri=${encodedURL}`;
             // getTweeterAuthToken();
           }}
         >
           Login To Tweeter
+        </button>
+      </div>
+      <div>
+        <div>Get User by Username</div>
+        <button
+          onClick={() => {
+            getUserByUsername();
+            // const encodedURL = encodeURIComponent("http://10.211.0.130:3000");
+            // window.location = `https://twitter.com/i/oauth2/authorize?state=state&code_challenge=challenge&code_challenge_method=plain&client_id=ZDdOa0RjWlJYLWZQUHFHa0tCMmw6MTpjaQ&scope=users.read&response_type=code&redirect_uri=${encodedURL}`;
+            // getTweeterAuthToken();
+          }}
+        >
+          Get User
         </button>
       </div>
     </div>

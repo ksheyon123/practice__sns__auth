@@ -1,4 +1,5 @@
 import { queryStringCreator } from "../utils/index";
+import { auth } from "twitter-api-sdk";
 
 const DISCORD_ENDPOINT = "https://discord.com";
 const TWITTER_ENDPOINT = "https://api.twitter.com";
@@ -25,10 +26,10 @@ const DISCORD_AUTH_PARAMS = {
 
 const TWITTER_AUTH_PARAMS = {
   client_id: TWITTER_CLIENT_ID,
-  // client_secret: TWITTER_CLIENT_SECRET,
+  client_secret: TWITTER_CLIENT_SECRET,
   grant_type: "authorization_code",
   code_verifier: "challenge",
-  redirect_uri: encodeURIComponent("http://10.211.1.22:3000/callback"),
+  redirect_uri: encodeURIComponent("http://10.211.0.130:3000"),
 };
 
 const requestAuthToken = async (params) => {
@@ -57,11 +58,6 @@ const requestTweeterAuthToken = async (params, queryString) => {
       ...TWITTER_AUTH_PARAMS,
       ...params,
     };
-    console.log("authParams", authParams);
-    console.log(
-      "Twitter",
-      btoa(`${TWITTER_CLIENT_ID}:${TWITTER_CLIENT_SECRET}$`)
-    );
     const rsp = await post(
       `${TWITTER_ENDPOINT}${PATH.twitter.oauth_2}`,
       {},
@@ -69,6 +65,50 @@ const requestTweeterAuthToken = async (params, queryString) => {
       {}
     );
     console.log(rsp);
+  } catch (e) {
+    throw e;
+  }
+};
+
+const requestUsingTwitterAuth = () => {
+  try {
+    console.log(TWITTER_CLIENT_ID);
+    console.log(TWITTER_CLIENT_SECRET);
+    const authClient = new auth.OAuth2User({
+      client_id: TWITTER_CLIENT_ID,
+      client_secret: TWITTER_CLIENT_SECRET,
+      callback: "http://10.211.0.130:3000",
+      scopes: ["users.read"],
+    });
+
+    console.log(authClient);
+
+    authClient.generateAuthURL({
+      state: "state",
+      code_challenge_method: "plain",
+      code_challenge: "challenge",
+    });
+  } catch (e) {
+    throw e;
+  }
+};
+
+const getUserByUsername = async () => {
+  try {
+    const rsp = await fetch(
+      "https://api.twitter.com/2/users/by/username/netflix",
+      {
+        method: "GET",
+        headers: {
+          Authorization:
+            "Bearer AAAAAAAAAAAAAAAAAAAAABDTlgEAAAAALtYyWPo%2Fmvb7M6ZpV9D8IdvVtss%3DPnFqGRosot6sgerIty8XS9DBcmlAkfnpAEUMpKvplIUvXdHGxy",
+        },
+      }
+    );
+    const response = await rsp.json();
+    if (rsp.ok) {
+      console.log(response);
+    }
   } catch (e) {
     throw e;
   }
@@ -124,4 +164,9 @@ const post = async (domain, params, queryString, headers) => {
   }
 };
 
-export { requestAuthToken, requestTweeterAuthToken };
+export {
+  requestAuthToken,
+  requestTweeterAuthToken,
+  requestUsingTwitterAuth,
+  getUserByUsername,
+};
